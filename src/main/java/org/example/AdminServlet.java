@@ -30,7 +30,7 @@ public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("WEB-INF/pages/adminpage.jsp");
+        req.getRequestDispatcher("WEB-INF/pages/adminpage.jsp").forward(req, resp);
     }
 
     @Override
@@ -68,20 +68,21 @@ public class AdminServlet extends HttpServlet {
             PostService bean = context.getBean(PostService.class);
             try {
                 id = bean.save(post);
+                saveFile(id, extension, part);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+
+        } else {
+            HttpSession session = req.getSession();
+            session.setAttribute("noImage", "1");
+            resp.sendRedirect(getServletContext().getContextPath()+ req.getRequestURI());
         }
 
-        try {
-            saveFile(req, resp, id, extension, part);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
     }
 
 
-    public void saveFile(HttpServletRequest req, HttpServletResponse resp, int id, String extension, Part part) throws SQLException, IOException, ServletException {
+    public void saveFile(int id, String extension, Part part) throws SQLException, IOException, ServletException {
         String uploadsDirUrl = getServletContext().getRealPath(UPLOADS);
         String absolutePathToFile = uploadsDirUrl + "/" + id + "." + extension;
         part.write(absolutePathToFile);

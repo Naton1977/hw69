@@ -22,10 +22,11 @@ public class SecurityFilter implements Filter {
         if (us == null) {
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login");
         }else {
-            httpServletRequest.getRequestDispatcher("/WEB-INF/pages/adminpage.jsp").forward(servletRequest, servletResponse);
+            filterChain.doFilter(servletRequest, servletResponse);
+//            httpServletRequest.getRequestDispatcher("/WEB-INF/pages/adminpage.jsp").forward(servletRequest, servletResponse);
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+
     }
 
 
