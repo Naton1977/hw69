@@ -46,9 +46,7 @@ public class HomeServlet extends HttpServlet {
     }
 
     public void selectPostsFromDataBase(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
-        ApplicationContext context =
-                new ClassPathXmlApplicationContext("application.xml");
-        PostService bean = context.getBean(PostService.class);
+        PostService bean = (PostService) req.getServletContext().getAttribute("bean");
         int startPosition = 0;
         int postPosition = 0;
         int countLines = bean.countLines();

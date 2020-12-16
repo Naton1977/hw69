@@ -62,11 +62,8 @@ public class AdminServlet extends HttpServlet {
         }
         if (contentType(part)) {
             extension = addFileExtension(part);
-
             Post post = new Post(postAuthor, publicationDate, postName, postTheme, postBody, draft, extension);
-            ApplicationContext context =
-                    new ClassPathXmlApplicationContext("application.xml");
-            PostService bean = context.getBean(PostService.class);
+            PostService bean = (PostService) req.getServletContext().getAttribute("bean");
             try {
                 id = bean.save(post);
                 saveFile(id, extension, part);
@@ -74,12 +71,12 @@ public class AdminServlet extends HttpServlet {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            resp.sendRedirect(getServletContext().getContextPath()+ req.getRequestURI());
+            resp.sendRedirect(getServletContext().getContextPath() + req.getRequestURI());
 
         } else {
 
             session.setAttribute("noImage", "1");
-            resp.sendRedirect(getServletContext().getContextPath()+ req.getRequestURI());
+            resp.sendRedirect(getServletContext().getContextPath() + req.getRequestURI());
         }
 
     }

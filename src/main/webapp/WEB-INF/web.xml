@@ -21,7 +21,6 @@
 
 
 
-
   <filter>
     <filter-name>EncodingFilter</filter-name>
     <filter-class>org.example.EncodingFilter</filter-class>
@@ -48,7 +47,9 @@
     <url-pattern>/admin</url-pattern>
   </filter-mapping>
 
-
+  <listener>
+    <listener-class>org.example.PostListener</listener-class>
+  </listener>
 
 
   <servlet-mapping>

@@ -28,7 +28,7 @@ public class DeletePost extends HttpServlet {
             System.out.println(id);
             try {
                 int idInt = Integer.parseInt(id);
-                deletePost(idInt);
+                deletePost(idInt, req);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -52,18 +52,14 @@ public class DeletePost extends HttpServlet {
 
     public void selectPostsFromDataBase(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
         List<Post> postsList;
-        ApplicationContext context =
-                new ClassPathXmlApplicationContext("application.xml");
-        PostService bean = context.getBean(PostService.class);
+        PostService bean = (PostService) req.getServletContext().getAttribute("bean");
         postsList = bean.findAll();
         req.setAttribute("Post", postsList);
         req.getRequestDispatcher("WEB-INF/pages/deletepost.jsp").forward(req, resp);
     }
 
-    public void deletePost(int id) throws SQLException {
-        ApplicationContext context =
-                new ClassPathXmlApplicationContext("application.xml");
-        PostService bean = context.getBean(PostService.class);
+    public void deletePost(int id, HttpServletRequest req) throws SQLException {
+        PostService bean = (PostService) req.getServletContext().getAttribute("bean");
         bean.delete(id);
     }
 }
