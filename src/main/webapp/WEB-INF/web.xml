@@ -36,13 +36,6 @@
     <filter-class>org.example.SecurityFilter</filter-class>
   </filter>
 
-  <filter>
-    <filter-name>ImgFilter</filter-name>
-    <filter-class>org.example.ImgFilter</filter-class>
-  </filter>
-
-
-
 
 
   <filter-mapping>
@@ -55,10 +48,6 @@
     <url-pattern>/admin</url-pattern>
   </filter-mapping>
 
-<filter-mapping>
-  <filter-name>ImgFilter</filter-name>
-  <url-pattern>/admin</url-pattern>
-</filter-mapping>
 
 
 

@@ -35,6 +35,7 @@ public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
         Part part = req.getPart("image");
 
         if (req.getParameter("postAuthor") != null) {
@@ -69,13 +70,14 @@ public class AdminServlet extends HttpServlet {
             try {
                 id = bean.save(post);
                 saveFile(id, extension, part);
+                session.removeAttribute("noImage");
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
             resp.sendRedirect(getServletContext().getContextPath()+ req.getRequestURI());
 
         } else {
-            HttpSession session = req.getSession();
+
             session.setAttribute("noImage", "1");
             resp.sendRedirect(getServletContext().getContextPath()+ req.getRequestURI());
         }
