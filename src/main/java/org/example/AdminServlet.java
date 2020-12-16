@@ -72,6 +72,7 @@ public class AdminServlet extends HttpServlet {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+            resp.sendRedirect(getServletContext().getContextPath()+ req.getRequestURI());
 
         } else {
             HttpSession session = req.getSession();

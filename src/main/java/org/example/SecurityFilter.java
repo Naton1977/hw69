@@ -21,12 +21,10 @@ public class SecurityFilter implements Filter {
         User us = (User) session.getAttribute("User");
         if (us == null) {
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login");
-        }else {
+        } else {
             filterChain.doFilter(servletRequest, servletResponse);
-//            httpServletRequest.getRequestDispatcher("/WEB-INF/pages/adminpage.jsp").forward(servletRequest, servletResponse);
+
         }
-
-
     }
 
 
