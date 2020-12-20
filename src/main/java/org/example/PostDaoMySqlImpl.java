@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostDaoMySqlImpl implements GenericDao<Post, Integer, Integer> {
+public class PostDaoMySqlImpl implements PostDao {
 
     @Override
     public Integer save(Post data) throws SQLException {

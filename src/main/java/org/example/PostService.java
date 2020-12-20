@@ -3,14 +3,14 @@ package org.example;
 import java.sql.SQLException;
 import java.util.List;
 
-public class PostService implements GenericDao<Post, Integer, Integer> {
-    GenericDao service;
+public class PostService implements PostDao {
+    PostDao service;
 
-    public GenericDao getService() {
+    public PostDao getService() {
         return service;
     }
 
-    public void setService(GenericDao service) {
+    public void setService(PostDao service) {
         this.service = service;
     }
 
@@ -39,7 +39,6 @@ public class PostService implements GenericDao<Post, Integer, Integer> {
         return (Post) service.update(data);
     }
 
-    @Override
     public List<Post> findPostDatabase(Integer start, Integer end) throws SQLException {
         return service.findPostDatabase(start, end);
     }
