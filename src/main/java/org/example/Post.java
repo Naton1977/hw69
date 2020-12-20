@@ -7,21 +7,19 @@ public class Post {
     private String postTheme;
     private String postBody;
     private String draft;
-    private String extension;
     private int id;
 
 
     public Post() {
     }
 
-    public Post(String postAuthor, String publicationDate, String postName, String postTheme, String postBody, String draft, String extension) {
+    public Post(String postAuthor, String publicationDate, String postName, String postTheme, String postBody, String draft) {
         this.postAuthor = postAuthor;
         this.publicationDate = publicationDate;
         this.postName = postName;
         this.postTheme = postTheme;
         this.postBody = postBody;
         this.draft = draft;
-        this.extension = extension;
     }
 
     public String getPostAuthor() {
@@ -72,14 +70,6 @@ public class Post {
         this.draft = draft;
     }
 
-    public String getExtension() {
-        return extension;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
     public int getId() {
         return id;
     }
@@ -97,7 +87,7 @@ public class Post {
                 ", postTheme='" + postTheme + '\'' +
                 ", postBody='" + postBody + '\'' +
                 ", draft='" + draft + '\'' +
-                ", extension='" + extension + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

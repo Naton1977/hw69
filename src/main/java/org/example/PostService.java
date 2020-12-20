@@ -39,12 +39,4 @@ public class PostService implements PostDao {
         return (Post) service.update(data);
     }
 
-    public List<Post> findPostDatabase(Integer start, Integer end) throws SQLException {
-        return service.findPostDatabase(start, end);
-    }
-
-    @Override
-    public Integer countLines() throws SQLException {
-        return (Integer) service.countLines();
-    }
 }

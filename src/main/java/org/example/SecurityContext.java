@@ -1,15 +1,18 @@
 package org.example;
 
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SecurityContext {
     private static SecurityContext instance;
-    private String URL;
-    private String UserSQL;
-    private String PasswordSQL;
+    private String URL = "jdbc:mysql://localhost/postlibrary";
+    private String UserSQL = "root";
+    private String PasswordSQL = "";
 
 
     private SecurityContext() {
@@ -29,11 +32,11 @@ public class SecurityContext {
         connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
         return connection;
     }
-
-    public void initSQl(String URL, String userSQL, String passwordSQL) {
-        this.URL = URL;
-        this.UserSQL = userSQL;
-        this.PasswordSQL = passwordSQL;
+    public PostService addBean(){
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("application.xml");
+        PostService bean = context.getBean(PostService.class);
+        return bean;
     }
 
 }

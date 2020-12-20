@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PostDaoMySqlImpl implements PostDao {
@@ -12,21 +15,27 @@ public class PostDaoMySqlImpl implements PostDao {
     @Override
     public Integer save(Post data) throws SQLException {
         Post post = data;
+        if (post.getPublicationDate().equals("")) {
+            Date dateNow = new Date();
+            SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            data.setPublicationDate(formatForDateNow.format(dateNow));
+        }
         SecurityContext securityContext = SecurityContext.getInstance();
         Connection connection = securityContext.connection();
         Statement statement = connection.createStatement();
         connection.setAutoCommit(false);
         if (post.getPublicationDate() == null) {
             try {
-                statement.executeUpdate("insert into posts (postAuthor, postName, postTheme, post, draft, extension) value ('" + post.getPostAuthor() + "', '" + post.getPostName() + "', '" + post.getPostTheme() + "', '" + post.getPostBody() + "', '" + post.getDraft() + "', '" + post.getExtension() + "');");
+                statement.executeUpdate("insert into posts (postAuthor, postName, postTheme, post, draft) value ('" + post.getPostAuthor() + "', '" + post.getPostName() + "', '" + post.getPostTheme() + "', '" + post.getPostBody() + "', '" + post.getDraft() + "');");
                 connection.setAutoCommit(true);
+                System.out.println("Пост успешно добавлен !!!");
             } catch (Exception exception) {
                 connection.rollback();
                 exception.printStackTrace();
             }
         } else {
             try {
-                statement.executeUpdate("insert into posts (postAuthor, publicationDate ,postName, postTheme, post, draft, extension) value ('" + post.getPostAuthor() + "', '" + post.getPublicationDate() + "','" + post.getPostName() + "', '" + post.getPostTheme() + "', '" + post.getPostBody() + "', '" + post.getDraft() + "', '" + post.getExtension() + "');");
+                statement.executeUpdate("insert into posts (postAuthor, publicationDate ,postName, postTheme, post, draft) value ('" + post.getPostAuthor() + "', '" + post.getPublicationDate() + "','" + post.getPostName() + "', '" + post.getPostTheme() + "', '" + post.getPostBody() + "', '" + post.getDraft() + "');");
                 connection.setAutoCommit(true);
             } catch (Exception exception) {
                 connection.rollback();
@@ -55,9 +64,8 @@ public class PostDaoMySqlImpl implements PostDao {
             String postTheme = resultSet.getString("postTheme");
             String postBody = resultSet.getString("post");
             String draft = resultSet.getString("draft");
-            String extension = resultSet.getString("extension");
             int id = resultSet.getInt("id");
-            Post post1 = new Post(postAuthor, publicationDate, postName, postTheme, postBody, draft, extension);
+            Post post1 = new Post(postAuthor, publicationDate, postName, postTheme, postBody, draft);
             post1.setId(id);
             list.add(post1);
         }
@@ -78,9 +86,8 @@ public class PostDaoMySqlImpl implements PostDao {
             String postTheme = resultSet.getString("postTheme");
             String postBody = resultSet.getString("post");
             String draft = resultSet.getString("draft");
-            String extension = resultSet.getString("extension");
             int id = resultSet.getInt("id");
-            post = new Post(postAuthor, publicationDate, postName, postTheme, postBody, draft, extension);
+            post = new Post(postAuthor, publicationDate, postName, postTheme, postBody, draft);
             post.setId(id);
         }
         return post;
@@ -94,6 +101,7 @@ public class PostDaoMySqlImpl implements PostDao {
         connection.setAutoCommit(false);
         try {
             statement.executeUpdate("delete from posts where id = " + integer + ";");
+            System.out.println("Пост успешно удален !!!");
             connection.commit();
         } catch (Exception e) {
             connection.rollback();
@@ -104,52 +112,19 @@ public class PostDaoMySqlImpl implements PostDao {
     @Override
     public Post update(Post data) throws SQLException {
         Post post = data;
-        int id = 0;
+        int id = post.getId();
         SecurityContext securityContext = SecurityContext.getInstance();
         Connection connection = securityContext.connection();
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select * from posts where postAuthor = '" + post.getPostAuthor() + "' and publicationDate = '" + post.getPublicationDate() + "' and postName = '" + post.getPostName() + "' and postTheme ='" + post.getPostTheme() + "' and post = '" + post.getPostBody() + "' and draft = '" + post.getDraft() + "' and extension = '" + post.getExtension() + "' ;");
-        while (resultSet.next()) {
-            id = resultSet.getInt(1);
+        connection.setAutoCommit(false);
+        try {
+            statement.executeUpdate("update posts set postAuthor = '" + post.getPostAuthor() + "', publicationDate = '" + post.getPublicationDate() + "', postName = '" + post.getPostName() + "', postTheme = '" + post.getPostTheme() + "', post = '" + post.getPostBody() + "', draft = '" + post.getDraft() + "' where id = " + id + ";");
+            System.out.println("Данные поста успешно обновленны !!!");
+            connection.commit();
+        } catch (Exception e) {
+            connection.rollback();
         }
         return post;
-    }
-
-    public List<Post> findPostDatabase(Integer startIndex, Integer endIndex) throws SQLException {
-        List<Post> postList = new ArrayList<>();
-        int startPosition = startIndex;
-        int postPosition = endIndex;
-        SecurityContext securityContext = SecurityContext.getInstance();
-        Connection connection = securityContext.connection();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select * from posts where draft = 'no' limit " + startPosition + ", " + postPosition + ";");
-        while (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String postAuthor = resultSet.getString("postAuthor");
-            String publicationDate = resultSet.getString("publicationDate");
-            String postName = resultSet.getString("postName");
-            String postTheme = resultSet.getString("postTheme");
-            String extension = resultSet.getString("extension");
-            String postBody = null;
-            String draft = null;
-            Post post = new Post(postAuthor, publicationDate, postName, postTheme, postBody, draft, extension);
-            post.setId(id);
-            postList.add(post);
-        }
-        return postList;
-    }
-
-    @Override
-    public Integer countLines() throws SQLException {
-        int countLines = 0;
-        SecurityContext securityContext = SecurityContext.getInstance();
-        Connection connection = securityContext.connection();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select count(*) from posts where draft = 'no';");
-        if (resultSet.next()) {
-            countLines = resultSet.getInt(1);
-        }
-        return countLines;
     }
 
 }
